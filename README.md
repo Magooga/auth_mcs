@@ -1,2 +1,4 @@
 # authorization_mcs
-Microservice for authorization functionality of OnLine Education Platform
+Микросервис Авторизатор. 
+1. Хранит информацию о пользователях и ролях пользователей для онлайн платформы обучения.
+	- Роли : студент, учитель, администратор
