@@ -23,9 +23,9 @@ COPY ["Services/Services.Contracts/Services.Contracts.csproj", "Services/Service
 COPY ["Services/Services.Implementations/Services.Implementations.csproj", "Services/Services.Implementations/"]
 COPY ["Services/Services.Repositories.Abstractions/Services.Repositories.Abstractions.csproj", "Services/Services.Repositories.Abstractions/"]
 
-COPY ["Test_Microservice/Test_Microservice.csproj", "Test_Microservice/"]
+# COPY ["Test_Microservice/Test_Microservice.csproj", "Test_Microservice/"]
 
-COPY ["WebClient/WebClient.csproj", "WebClient/"]
+# COPY ["WebClient/WebClient.csproj", "WebClient/"]
 
 RUN dotnet restore "Autorization_Microservice/Autorization_Microservice.csproj"
 

@@ -1,0 +1,34 @@
+version: '3.4'
+
+services:
+
+    postgres_db_auth:
+      container_name: postgres_db_auth
+      ports:
+        - "5438:5432"
+      image: postgres:12.3-alpine
+      restart: always
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+      volumes:
+        - postgres_db_auth:/var/lib/postgresql_auth/data
+
+    auth_api:
+      image: auth_api_img
+      container_name: auth_api
+      ports:
+        - "5066:80"
+      build:
+        context: ./
+        dockerfile: ./Autorization_Microservice/Dockerfile
+      environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=http://+:80
+        - ConnectionStrings:db=Host=postgres_db_auth;Port=5432;Database=auth_db;User Id=postgres;Password=postgres;
+      depends_on:
+        - postgres_db_auth
+
+
+volumes:
+  postgres_db_auth:
