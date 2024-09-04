@@ -2,12 +2,13 @@
 using System.Numerics;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Infrastructure.EntityFramework;
 
 namespace Infrastructure.Repositories.Implementations
 {
     public class UserRepository : Repository<User, long>, IUserRepository
     {
-        public UserRepository(DbContext context) : base(context)
+        public UserRepository(DatabaseContext context) : base(context)
         {       
         }
 

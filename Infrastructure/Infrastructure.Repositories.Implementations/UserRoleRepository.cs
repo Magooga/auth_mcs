@@ -8,12 +8,13 @@ using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Services.Abstractions;
 using Services.Repositories.Abstractions;
+using Infrastructure.EntityFramework;
 
 namespace Infrastructure.Repositories.Implementations
 {
     public class UserRoleRepository : Repository<UserRole, long>, IUserRoleRepository
     {
-        public UserRoleRepository(DbContext context) : base(context)
+        public UserRoleRepository(DatabaseContext context) : base(context)
         {
 
         }

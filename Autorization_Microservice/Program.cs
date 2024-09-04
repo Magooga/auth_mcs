@@ -7,6 +7,7 @@ using Services.Abstractions;
 using Services.Implementations;
 using AutoMapper;
 using Autorization_Microservice.Mapping;
+using Infrastructure.Repositories.Implementations.SeedingData;
 
 namespace Autorization_Microservice
 {
@@ -23,18 +24,24 @@ namespace Autorization_Microservice
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<DatabaseContext>( x =>
+            builder.Services.AddScoped<IDbCreator, DbCreator>();
+
+            builder.Services.AddDbContext<DatabaseContext>( optionsBuilder =>
             {
-                x.UseNpgsql(builder.Configuration.GetConnectionString("db"));
+                optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("db"));
 
                 Console.WriteLine("builder.Configuration.GetConnectionString(\"db\") = " + builder.Configuration.GetConnectionString("db"));
             });
 
-            builder.Services.AddScoped(typeof(DbContext), typeof(DatabaseContext));
+            //builder.Services.AddScoped(typeof(DbContext), typeof(DatabaseContext));
 
-            builder.Services.AddTransient(typeof(IUserRepository), typeof(UserRepository));
-            builder.Services.AddTransient(typeof(IRoleRepository), typeof(RoleRepository));
-            builder.Services.AddTransient(typeof(IUserRoleRepository), typeof(UserRoleRepository));
+            // builder.Services.AddTransient(typeof(IUserRepository), typeof(UserRepository));
+            // builder.Services.AddTransient(typeof(IRoleRepository), typeof(RoleRepository));
+            // builder.Services.AddTransient(typeof(IUserRoleRepository), typeof(UserRoleRepository));
+
+            builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+            builder.Services.AddScoped(typeof(IRoleRepository), typeof(RoleRepository));
+            builder.Services.AddScoped(typeof(IUserRoleRepository), typeof(UserRoleRepository));
 
             builder.Services.AddTransient(typeof(IUserService), typeof(UserService));
             builder.Services.AddTransient(typeof(IRoleService), typeof(RoleService));
@@ -56,7 +63,7 @@ namespace Autorization_Microservice
 
             var app = builder.Build();
 
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true); // иначе ошибка : error :  'timestamp with time zone' literal cannot be generated for Unspecified DateTime: a UTC DateTime is required
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true); // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ : error :  'timestamp with time zone' literal cannot be generated for Unspecified DateTime: a UTC DateTime is required
 
 
             //Configure the HTTP request pipeline.
@@ -71,6 +78,14 @@ namespace Autorization_Microservice
             app.UseAuthorization();
 
             app.MapControllers();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+
+                var dbCreator = services.GetService<IDbCreator>();
+                dbCreator?.Create();
+            }
 
             app.Run();
         }

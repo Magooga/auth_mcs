@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Services.Repositories.Abstractions;
+using Infrastructure.EntityFramework;
 
 namespace Infrastructure.Repositories.Implementations
 {
@@ -16,10 +17,10 @@ namespace Infrastructure.Repositories.Implementations
     /// <typeparam name="TPrimaryKey">Основной ключ</typeparam>
     public abstract class ReadRepository<T, TPrimaryKey> : IReadRepository<T, TPrimaryKey> where T : class, IEntity<TPrimaryKey>
     {
-        protected readonly DbContext Context;
+        protected readonly DatabaseContext Context;
         protected DbSet<T> EntitySet;
 
-        protected ReadRepository(DbContext context)
+        protected ReadRepository(DatabaseContext context)
         {
             Context = context;
             EntitySet = Context.Set<T>();

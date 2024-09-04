@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Services.Repositories.Abstractions;
+using Infrastructure.EntityFramework;
 
 namespace Infrastructure.Repositories.Implementations
 {
     public abstract class Repository<T, TPrimaryKey> : ReadRepository<T, TPrimaryKey>, IRepository<T, TPrimaryKey> where T : class, IEntity<TPrimaryKey>
     {
-        protected Repository(DbContext context) : base(context)
+        protected Repository(DatabaseContext context) : base(context)
         { 
         
         }

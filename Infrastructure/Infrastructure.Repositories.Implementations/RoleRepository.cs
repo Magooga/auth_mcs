@@ -7,12 +7,14 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.EntityFramework;
+
 
 namespace Infrastructure.Repositories.Implementations
 {
     public class RoleRepository : Repository<Role, long>, IRoleRepository
     {
-        public RoleRepository(DbContext context) : base(context)
+        public RoleRepository(DatabaseContext context) : base(context)
         {
 
         }
