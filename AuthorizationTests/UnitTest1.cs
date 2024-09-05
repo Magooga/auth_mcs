@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Autorization_Microservice.Mapping;
 using System.Web.Http.Results;
+using AutorizationMcsContract;
 
 public class UnitTest1
 {
@@ -28,26 +29,40 @@ public class UnitTest1
         var controller = new UserController(userService: mockService.Object, mapper: mapper);
         
         // Act
-        IActionResult actionResult = await controller.Get(1);
-        var contentResult = actionResult as OkNegotiatedContentResult<UserDto>;
+        var actionResult = await controller.Get(1);
+        var contentResult = actionResult as ObjectResult;
 
         // Assert
         Assert.NotNull(contentResult);
-        Assert.NotNull(contentResult.Content);
-        Assert.Equal(1, contentResult.Content.Id);
+        Assert.True(contentResult is OkObjectResult);
+        Assert.Equal(200, contentResult.StatusCode);
+        Assert.IsType<UserAutorizationModel>(contentResult.Value);
+    }
+
+    [Fact]
+    public async void GetById_User_ReturnUser()
+    {
+        // Arrange
+
+        // Act
+
+        // Assert
     }
 
     private UserDto GetTestUser(int id)
     {
-        return new UserDto {Id = id, 
-        FirstName = "Igor", 
-        LastName = "Gorev", 
-        Email = "email", 
-        Hash = new Byte[20], 
-        Salt = new Byte[20],
-        CreateDate = DateTime.Now,
-        UpDate = DateTime.Now,
-        Deleted = false };
+        return new UserDto 
+        {
+            Id = id, 
+            FirstName = "Igor", 
+            LastName = "Gorev", 
+            Email = "email", 
+            Hash = new Byte[20], 
+            Salt = new Byte[20],
+            CreateDate = DateTime.Now,
+            UpDate = DateTime.Now,
+            Deleted = false 
+        };
     }
 
     [Fact]

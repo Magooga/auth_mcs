@@ -83,6 +83,10 @@ namespace Autorization_Microservice
             {
                 var services = scope.ServiceProvider;
 
+                // var dbContext = scope.ServiceProvider.GetService<DatabaseContext>();
+                // // Create the Db if it doesn't exist and applies any pending migration.
+                // dbContext?.Database.Migrate();
+
                 var dbCreator = services.GetService<IDbCreator>();
                 dbCreator?.Create();
             }
