@@ -8,6 +8,7 @@ using Services.Implementations;
 using AutoMapper;
 using Autorization_Microservice.Mapping;
 using Infrastructure.Repositories.Implementations.SeedingData;
+using Autorization_Microservice.Settings;
 
 namespace Autorization_Microservice
 {
@@ -47,19 +48,22 @@ namespace Autorization_Microservice
             builder.Services.AddTransient(typeof(IRoleService), typeof(RoleService));
             builder.Services.AddTransient(typeof(IUserRoleService), typeof(UserRoleService));
 
-            var configMap = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<UserMappingProfile>();
-                cfg.AddProfile<RoleMappingProfile>();
-                cfg.AddProfile<UserRoleMappingProfile>();
-                cfg.AddProfile<Services.Implementations.Mapping.UserMappingProfile>();
-                cfg.AddProfile<Services.Implementations.Mapping.RoleMappingProfile>();
-                cfg.AddProfile<Services.Implementations.Mapping.UserRoleMappingProfile>();
-            });
 
-            var mapper = configMap.CreateMapper();
+            // var configMap = new MapperConfiguration(cfg =>
+            // {
+            //     cfg.AddProfile<UserMappingProfile>();
+            //     cfg.AddProfile<RoleMappingProfile>();
+            //     cfg.AddProfile<UserRoleMappingProfile>();
+            //     cfg.AddProfile<Services.Implementations.Mapping.UserMappingProfile>();
+            //     cfg.AddProfile<Services.Implementations.Mapping.RoleMappingProfile>();
+            //     cfg.AddProfile<Services.Implementations.Mapping.UserRoleMappingProfile>();
+            // });
 
-            builder.Services.AddSingleton<IMapper>(mapper);
+            // var mapper = configMap.CreateMapper();
+
+            // builder.Services.AddSingleton<IMapper>(mapper);
+
+            builder.Services.AddSingleton<IMapper>(new Mapper(MapperSettings.GetMapperConfiguration()));
 
             var app = builder.Build();
 

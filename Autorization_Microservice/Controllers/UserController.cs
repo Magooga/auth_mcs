@@ -5,10 +5,9 @@ using Services.Contracts;
 using Autorization_Microservice.Models;
 using System.Numerics;
 using AutorizationMcsContract;
-using System.Security.Cryptography;
-using System.Security.Policy;
 using Domain.Entities;
 using System.Text;
+using Autorization_Microservice.Secure;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -55,7 +54,7 @@ namespace Autorization_Microservice.Controllers
         /// <returns></returns>
         // GET api/<UserController>/5
         [HttpGet("{id:long}")]
-        public async Task<IActionResult> Get(long id) 
+        public async Task<IActionResult> GetByIdAsync(long id) 
         {
             var entity = _mapper.Map<UserModel>(await _userService.GetById(id));
             
@@ -73,7 +72,7 @@ namespace Autorization_Microservice.Controllers
         /// <param name="email"></param>
         /// <returns>Return id of User, if need user roles, go to UserRole controller</returns>
         [HttpGet("{email}/{password}")]
-        public async Task<IActionResult> GetAssignUser(string email, string password)
+        public async Task<IActionResult> GetAssignUserAsync(string email, string password)
         {
             var entity = _mapper.Map<UserModel>(await _userService.GetByEmail(email));
 
@@ -81,7 +80,7 @@ namespace Autorization_Microservice.Controllers
                 return NotFound("No User with this id");
 
             // Verify password
-            if (VerifyPassword(password, entity.Hash, entity.Salt)) // if password right
+            if (SecurePsw.VerifyPassword(password, entity.Hash, entity.Salt)) // if password right
             {
                 return Ok(entity.Id);
             } else 
@@ -97,11 +96,11 @@ namespace Autorization_Microservice.Controllers
         /// <returns></returns>
         // POST api/<UserController>
         [HttpPost]
-        public async Task<IActionResult> Add(UserAutorizationModel userAutorizationModel)
+        public async Task<IActionResult> AddAsync(UserAutorizationModel userAutorizationModel)
         {
             var entity = _mapper.Map<UserModel>(userAutorizationModel);
 
-            CreateHashSalt(entity, userAutorizationModel.Password); // Create Hash and Salt for password
+            SecurePsw.CreateHashSalt(entity, userAutorizationModel.Password); // Create Hash and Salt for password
 
             return Ok(await _userService.Create(_mapper.Map<UserDto>(entity)));
         }
@@ -114,7 +113,7 @@ namespace Autorization_Microservice.Controllers
         /// <returns></returns>
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Edit(int id, UserAutorizationModel userAutorizationModel)
+        public async Task<IActionResult> EditAsync(int id, UserAutorizationModel userAutorizationModel)
         {
             var entity = _mapper.Map<UserAutorizationModel, UserModel>(userAutorizationModel);
             await _userService.Update(id, _mapper.Map<UserModel, UserDto>(entity));
@@ -128,48 +127,11 @@ namespace Autorization_Microservice.Controllers
         /// <returns></returns>
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
+        public async Task<IActionResult> DeleteAsync(long id)
         {
             await _userService.Delete(id);
 
             return Ok();
-        }
-
-        void CreateHashSalt(UserModel user, string password) 
-        {
-            byte[] mySalt;
-            user.Hash = HashPassword(password, out mySalt);
-            user.Salt = mySalt;
-        }
-
-        byte[] HashPassword(string password, out byte[] salt)
-        {
-            const int keySize = 20;
-            const int iterations = 350000;
-            HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
-
-            salt = RandomNumberGenerator.GetBytes(keySize);
-
-            var hash = Rfc2898DeriveBytes.Pbkdf2(
-                Encoding.UTF8.GetBytes(password),
-                salt,
-                iterations,
-                hashAlgorithm,
-                keySize
-                );
-
-            return hash;
-        }
-
-        bool VerifyPassword(string password, byte[] hash, byte[] salt)
-        {
-            const int keySize = 20;
-            const int iterations = 350000;
-            HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
-
-            var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations, hashAlgorithm, keySize);
-
-            return hashToCompare.SequenceEqual(hash);
-        }
+        }     
     }
 }
