@@ -29,11 +29,11 @@
   </ItemGroup>
 
     <ItemGroup>
+    <ProjectReference Include="../Autorization_Microservice/Auth_Microservice.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.Repositories.Implementations\Infrastructure.Repositories.Implementations.csproj" />
     <ProjectReference Include="..\Services\Services.Contracts\Services.Contracts.csproj" />
     <ProjectReference Include="..\Services\Services.Implementations\Services.Implementations.csproj" />
-    <ProjectReference Include="..\Autorization_Microservice\Autorization_Microservice.csproj" />
   </ItemGroup>
 
 </Project>

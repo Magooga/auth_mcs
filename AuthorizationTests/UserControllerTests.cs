@@ -13,6 +13,7 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using Autorization_Microservice.Settings;
 using FluentAssertions;
+using Auth_Tests.EntityBuilders;
 
 public class UserControllerTests
 {
@@ -40,7 +41,10 @@ public class UserControllerTests
     {
         // Arrange
         var userId = 1;
-        _userServiceMock.Setup(service => service.GetById(userId).Result).Returns(GetTestUser(userId));
+        var userBuilder = new UserBuilder();
+        userBuilder.Init();
+        userBuilder.SetTestUserDtoWithId(userId);
+        _userServiceMock.Setup(service => service.GetById(userId).Result).Returns(userBuilder._userDto);
         
         // Act
         var actionResult = await _userController.GetByIdAsync(userId);
@@ -71,25 +75,28 @@ public class UserControllerTests
         contentResult.Value.Should().Be(strReturnErr);
     }
 
-    private UserDto GetTestUser(int id)
-    {
-        return new UserDto 
-        {
-            Id = id, 
-            FirstName = "Igor", 
-            LastName = "Gorev", 
-            Email = "email", 
-            Hash = new Byte[20], 
-            Salt = new Byte[20],
-            CreateDate = DateTime.Now,
-            UpDate = DateTime.Now,
-            Deleted = false 
-        };
-    }
 
     [Fact]
-    public void Test2()
+    public async void GetAssignUser_User_ReturnsId()
     {
-        Assert.Equal(0,0);
+        // Arrange
+        var email = "root";
+        var psw = "root";
+        long userId = 23;
+
+        var userBuilder = new UserBuilder();
+        userBuilder.Init();
+        userBuilder.SetTestUserDtoWithId(userId);
+        _userServiceMock.Setup(service => service.GetByEmail(email).Result).Returns(userBuilder._userDto);
+
+        // Act
+        var actionResult = await _userController.GetAssignUserAsync(email, psw);
+        var contentResult = actionResult as ObjectResult;
+
+        // Assert
+        Assert.NotNull(contentResult);
+        Assert.True(contentResult is OkObjectResult);
+        Assert.Equal(200, contentResult.StatusCode);
+        Assert.Equal(userId, contentResult.Value);
     }
 }

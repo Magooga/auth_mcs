@@ -77,7 +77,7 @@ namespace Autorization_Microservice.Controllers
             var entity = _mapper.Map<UserModel>(await _userService.GetByEmail(email));
 
             if (entity == null)
-                return NotFound("No User with this id");
+                return NotFound("No User with this email register");
 
             // Verify password
             if (SecurePsw.VerifyPassword(password, entity.Hash, entity.Salt)) // if password right

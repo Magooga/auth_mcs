@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Autorization_Microservice", "Autorization_Microservice\Autorization_Microservice.csproj", "{CA17EE21-945B-4F6D-86FF-F48C7367948D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth_Microservice", "Autorization_Microservice\Auth_Microservice.csproj", "{CA17EE21-945B-4F6D-86FF-F48C7367948D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{634B8CFC-D31A-484D-89D3-CD5E0BE51905}"
 EndProject
@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Implementations", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Repositories.Abstractions", "Services\Services.Repositories.Abstractions\Services.Repositories.Abstractions.csproj", "{D3DC92B3-A3A1-47A6-9445-D0E97FC578CB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthorizationTests", "AuthorizationTests\AuthorizationTests.csproj", "{358E4A3A-1420-458F-80C8-CE346AD778DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth_Tests", "AuthorizationTests\Auth_Tests.csproj", "{358E4A3A-1420-458F-80C8-CE346AD778DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
