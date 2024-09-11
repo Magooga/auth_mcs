@@ -85,7 +85,7 @@ namespace Autorization_Microservice.Controllers
                 return Ok(entity.Id);
             } else 
             {
-                return new BadRequestResult();
+                return BadRequest("Wrong Password!");
             }
         }
 

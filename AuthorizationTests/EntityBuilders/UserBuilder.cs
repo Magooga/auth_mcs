@@ -6,9 +6,9 @@ namespace Auth_Tests.EntityBuilders;
 
 public class UserBuilder
 {
-    public readonly UserDto _userDto = new UserDto(); 
+    private readonly UserDto _userDto = new UserDto(); 
 
-    public void Init()
+    public UserBuilder Init()
     {
         _userDto.Id = 1;
         _userDto.FirstName = "root";
@@ -19,15 +19,26 @@ public class UserBuilder
         _userDto.CreateDate = new DateTime(2021, 12, 15).ToUniversalTime();
         _userDto.UpDate = new DateTime(1970, 1, 1).ToUniversalTime();
         _userDto.Deleted = false;
+
+        return this;
     }
 
-    public void SetTestUserDtoWithId(long id)
+    public UserBuilder SetTestUserDtoId(long id)
     {
-        _userDto.Id = id;
+        this._userDto.Id = id;
+
+        return this;
     }
 
-    public void SetTestUserDtoWithEmail(string email)
+    public UserBuilder SetTestUserDtoEmail(string email)
     {
-        _userDto.Email = email;
+        this._userDto.Email = email;
+
+        return this;
+    }
+
+    public UserDto GetEntity()
+    {
+        return this._userDto;
     }
 }

@@ -4,6 +4,7 @@ using Moq;
 using Services.Abstractions;
 using Services.Contracts;
 using Autorization_Microservice.Controllers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Autorization_Microservice.Mapping;
@@ -14,6 +15,7 @@ using AutoFixture.AutoMoq;
 using Autorization_Microservice.Settings;
 using FluentAssertions;
 using Auth_Tests.EntityBuilders;
+using System.Net;
 
 public class UserControllerTests
 {
@@ -42,9 +44,9 @@ public class UserControllerTests
         // Arrange
         var userId = 1;
         var userBuilder = new UserBuilder();
-        userBuilder.Init();
-        userBuilder.SetTestUserDtoWithId(userId);
-        _userServiceMock.Setup(service => service.GetById(userId).Result).Returns(userBuilder._userDto);
+        userBuilder.Init().SetTestUserDtoId(userId);
+ 
+        _userServiceMock.Setup(service => service.GetById(userId).Result).Returns(userBuilder.GetEntity());
         
         // Act
         var actionResult = await _userController.GetByIdAsync(userId);
@@ -58,7 +60,7 @@ public class UserControllerTests
     }
 
     [Fact]
-    public async void GetById_UserIsNotFound_ReturnsNoUserWithThisId()
+    public async void GetById_UserIsNotFound_ReturnsNotFound()
     {
         // Arrange
         var userId = 99;
@@ -72,7 +74,9 @@ public class UserControllerTests
         var contentResult = actionResult as ObjectResult;
 
         // Assert
-        contentResult.Value.Should().Be(strReturnErr);
+        //contentResult.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        Assert.IsType<NotFoundObjectResult>(actionResult);
+        contentResult.Value.Should().Be(strReturnErr);       
     }
 
 
@@ -85,9 +89,9 @@ public class UserControllerTests
         long userId = 23;
 
         var userBuilder = new UserBuilder();
-        userBuilder.Init();
-        userBuilder.SetTestUserDtoWithId(userId);
-        _userServiceMock.Setup(service => service.GetByEmail(email).Result).Returns(userBuilder._userDto);
+        userBuilder.Init().SetTestUserDtoId(userId);
+
+        _userServiceMock.Setup(service => service.GetByEmail(email).Result).Returns(userBuilder.GetEntity());
 
         // Act
         var actionResult = await _userController.GetAssignUserAsync(email, psw);
@@ -98,5 +102,28 @@ public class UserControllerTests
         Assert.True(contentResult is OkObjectResult);
         Assert.Equal(200, contentResult.StatusCode);
         Assert.Equal(userId, contentResult.Value);
+    }
+
+    [Fact]
+    public async void GetAssignUser_User_ReturnsBadRequestResult()
+    {
+        // Arrange
+        var email = "root";
+        var psw = "rootWrong";
+        long userId = 23;
+        var strReturnErr = "Wrong Password!";
+
+        var userBuilder = new UserBuilder();
+        userBuilder.Init().SetTestUserDtoId(userId);
+
+        _userServiceMock.Setup(service => service.GetByEmail(email).Result).Returns(userBuilder.GetEntity());
+
+        // Act
+        var actionResult = await _userController.GetAssignUserAsync(email, psw);
+        var contentResult = actionResult as ObjectResult;
+
+        // Assert
+        Assert.IsType<BadRequestObjectResult>(actionResult);
+        contentResult.Value.Should().Be(strReturnErr);
     }
 }
