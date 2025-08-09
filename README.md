@@ -1,2 +1,2 @@
 # authorization_mcs
-Microservice for authorization functionality of OnLine Education Platform
+Микросервис для обеспечения функционала авторизации на онлайн платформе обучения
